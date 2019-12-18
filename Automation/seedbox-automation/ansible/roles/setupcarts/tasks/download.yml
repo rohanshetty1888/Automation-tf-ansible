@@ -1,0 +1,9 @@
+---
+
+- name: Unarchive a file that needs to be downloaded (added in 2.0)
+  unarchive:
+    src: "{{ carts_url }}"
+    dest: "/export/stack/carts/"
+    remote_src: yes
+  when: (carts_url != "")
+

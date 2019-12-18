@@ -1,0 +1,16 @@
+agent:
+  agent_id: {{ craneagent_agentid }}
+  agent_secret_key: {{ craneagent_agentsecret }}
+  dsa:
+    host_ip: {{ craneagent_dsaip }}
+    password: dbc
+    port: '9090'
+    username: dbc
+    target_group_path: {{ craneagent_targetgrouppath }}
+    target_group:
+      user: root
+      group: root
+      permission: 777
+  path:
+    credentials: {{ craneagent_credentials }}
+    key_file: {{ craneagent_keyfile }}

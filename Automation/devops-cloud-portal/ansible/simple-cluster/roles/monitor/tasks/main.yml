@@ -1,0 +1,108 @@
+---
+- name: Create node_exporter user
+  user:
+    name: node_exporter
+    shell: /bin/false
+    groups: developers
+    append: yes
+
+- name: Download node_exporter
+  get_url:
+    url: https://github.com/prometheus/node_exporter/releases/download/v0.15.1/node_exporter-0.15.1.linux-amd64.tar.gz
+    dest: /home/tungsten
+    checksum: sha256:7ffb3773abb71dd2b2119c5f6a7a0dbca0cff34b24b2ced9e01d9897df61a127
+
+- name: Unarchive a file
+  unarchive:
+    src: /home/tungsten/node_exporter-0.15.1.linux-amd64.tar.gz
+    dest: /home/tungsten/node_exporter-0.15.1.linux-amd64
+
+- name: Copy exporter file
+  copy:
+    src: /home/tungsten/node_exporter-0.15.1.linux-amd64/node_exporter
+    dest: /usr/local/bin
+    owner: node_exporter
+    group: node_exporter
+    mode: 0644
+    backup: yes
+
+- name: Clean artifact path
+  file:
+    state: absent
+    path: /home/tungsten/node_exporter-0.15.1.linux-amd64
+
+- name: Clean artifact path
+  file:
+    state: absent
+    path: /home/tungsten/node_exporter-0.15.1.linux-amd64.tar.gz
+
+- name: add template to run exporter on boot
+  template:
+    src: node_exporter.conf.j2
+    dest: /etc/init/node_exporter.conf
+    owner: root
+    group: root
+    mode: 0644
+
+
+#### Mysql exporter setup
+
+---
+- name: Create mysql_exporter user
+  user:
+    name: mysql_exporter
+    shell: /bin/false
+    groups: developers
+    append: yes
+
+- name: Download mysql_exporter
+  get_url:
+    url: https://github.com/prometheus/mysqld_exporter/releases/download/v0.10.0/mysqld_exporter-0.10.0.linux-amd64.tar.gz
+    dest: /home/tungsten
+
+- name: Unarchive a file
+  unarchive:
+    src: /home/tungsten/mysqld_exporter-0.10.0.linux-amd64.tar.gz
+    dest: /home/tungsten/mysqld_exporter-0.10.0.linux-amd64
+
+- name: Create mysql_exporter directory
+  file:
+    path: /etc/mysql_exporter
+    state: directory
+    mode: 0744
+
+- name: add template to run exporter on boot
+  template:
+    src: my.cnf.j2
+    dest: /etc/mysql_exporter/.my.cnf
+    owner: mysql_exporter
+    group: mysql_exporter
+    mode: 0600
+
+- name: Copy exporter file
+  copy:
+    src: /home/tungsten/mysqld_exporter-0.10.0.linux-amd64/mysqld_exporter
+    dest: /usr/local/bin
+    owner: mysql_exporter
+    group: mysql_exporter
+    mode: 0644
+    backup: yes
+
+- name: Clean artifact path
+  file:
+    state: absent
+    path: /home/tungsten/mysqld_exporter-0.10.0.linux-amd64
+
+- name: Clean artifact path
+  file:
+    state: absent
+    path: /home/tungsten/mysqld_exporter-0.10.0.linux-amd64.tar.gz
+
+- name: add template to run exporter on boot
+  template:
+    src: mysql_exporter.conf.j2
+    dest: /etc/init/mysql_exporter.conf
+    owner: root
+    group: root
+    mode: 0644
+

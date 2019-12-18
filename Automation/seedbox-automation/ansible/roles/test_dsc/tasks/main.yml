@@ -1,0 +1,22 @@
+---
+
+# Description: Following task will check DSC service package installation and service status
+- name: Check DSC Service installation
+  shell: rpm -qa | grep 'DSC-' 
+  register: check_dsc
+  ignore_errors: yes
+
+- name: Role=test_dsc | Task=DSC Test Case | Description=Verify dsc service installation
+  fail:
+    msg: "DSC Service is not installed properly. Test case for checking dsc service installation has been failed"
+  when: check_dsc.rc != 0
+
+- name: Check dsc service status
+  shell: /etc/init.d/dsc status | grep "is running" 
+  register: dsc_service
+  ignore_errors: yes
+
+- name: Role=test_dsc | Task=DSC Test Case | Description=Verify dsc service status
+  fail:
+    msg: "DSC Service is not running. State: Down. Test case for checking dsc service status has been failed"
+  when: dsc_service.rc != 0 

@@ -1,0 +1,6 @@
+---
+
+- name: add cart
+  shell: stack add cart {{ cart_name }}
+  when: (cart_name != "")
+

@@ -1,0 +1,39 @@
+---
+
+
+- name: Install python-pip.
+  package:
+    name: python-pip
+    state: present
+
+- name: Install the Python SNI support packages.
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-dev
+    - libssl-dev
+    - libffi-dev
+# There extra pip dependencies are needed to add SSL SNI support to
+# Python version prior to 2.7.9. SNI support is needed by the Ansible
+# apt_key module.
+- name: Install the Python SNI python-pip dependencies.
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - pyopenssl
+    - ndg-httpsclient
+    - pyasn1
+
+- name:  Install the Docker Engine
+  include: docker_engine.yml
+
+- name: Install docker-py
+  include: docker_py.yml
+
+- name:  Adds the Docker admin users to the Docker group
+  include: docker_group.yml
+
+- name: Setup the Docker Swarm Cluster
+  include: swarm_cluster.yml

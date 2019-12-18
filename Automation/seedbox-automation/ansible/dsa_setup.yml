@@ -1,0 +1,27 @@
+##
+# Description: This is playbook for deploying KVM, creating Partition and installing DSA components. Playbook will run ansible test cases after# every role execution for verifying deployment of dsa components.
+##
+---
+- hosts: dsa
+  gather_facts: False
+  vars_files:
+    - environments/qa-lab.yml 
+  roles:
+    - diskpartition
+#    - test_diskpartition
+    - kvm
+    - test_kvm
+    - common
+    - test_common
+    - test_db
+    - dsc           #Needs database 
+    - test_dsc
+    - clienthandler
+    - test_clienthandler
+    - barcmd        #Needs jdk
+    - test_barcmd
+    - tdrest
+    - test_tdrest
+    - network-interface
+#    - craneagent
+#    - test_craneagent

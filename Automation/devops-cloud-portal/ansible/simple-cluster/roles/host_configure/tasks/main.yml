@@ -1,0 +1,31 @@
+---
+
+- name: add hosts entries in /etc/hosts file
+  lineinfile:
+    dest: /etc/hosts
+    insertafter: '^127.0.0.1'
+    line: '{{ item }}'
+  with_items:
+    - '10.0.1.5   {{ host }}-1'
+    - '10.0.1.6   {{ host }}-2'
+    - '10.0.1.7   {{ host }}-3'
+    - '10.0.1.20  {{ host }}-conn-1'
+    - '10.0.1.21  {{ host }}-conn-2'
+
+- name: add iptables rule to accept local connection
+  shell: iptables -A INPUT -i lo -m state --state NEW -j ACCEPT
+
+
+- name: ensure private key and public one are present for host1
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0600
+    owner: tungsten
+    group: tungsten
+  with_items:
+    - {src: 'id_rsa.host1.j2',dest: '/home/tungsten/.ssh/id_rsa'}
+    - {src: 'id_rsa.pub.host1.j2',dest: '/home/tungsten/.ssh/id_rsa.pub'}
+    - {src: 'authorized_keys.j2',dest: '/home/tungsten/.ssh/authorized_keys'}
+
+

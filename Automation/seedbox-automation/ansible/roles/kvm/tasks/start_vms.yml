@@ -1,0 +1,27 @@
+---
+
+- name: start kvm default network
+  shell: virsh net-start default
+  ignore_errors: yes
+
+- name: start database machine 
+  shell: virsh create "{{ kvm_dsc_repository_xml_path }}"
+
+- name: pause of 60 seconds. Launching database kvm VM
+  pause: seconds=60
+
+
+- name: make database box as passwordless/copy private-key
+  copy: src=files/id_rsa  dest=/tmp/ mode=0400
+
+- name: start database 
+  shell: ssh -o 'StrictHostKeyChecking=no' -i /tmp/id_rsa -tt root@{{ kvm_dsc_repository_static_ip }} /etc/init.d/tpa start
+
+- name: pause of 60 seconds. Launching database 
+  pause: seconds=60
+#
+#- name: start viewpoint machine
+#  shell: virsh create "{{ kvm_viewpoint_xml_path }}" 
+
+#- name: pause of 30 seconds. Launching viewpoint VM
+#  pause: seconds=30

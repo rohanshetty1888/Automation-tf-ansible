@@ -1,0 +1,22 @@
+---
+
+# Description: Following task will check whether tdactivemq and JDK package is installed or not
+- name: Check tdactivemq status
+  shell: /etc/init.d/tdactivemq status
+  register: tdactivemq_status
+  ignore_errors: yes
+
+- name: Role=test_common | Task=TDActivemq Test Case | Description=Verify tdactivemq service status
+  fail:
+    msg: "Tdactivemq Service is not running. State: Down"
+  when: tdactivemq_status.rc != 0
+
+- name: Check JDK status
+  shell: ls -l /opt/teradata/jvm64/jdk7/bin/javac
+  register: jdk_status
+  ignore_errors: yes
+
+- name: Role=test_common | Task=JDK Test Case | Description=Verify TD JDK installation  
+  fail:
+    msg: "Teradata JDK is not installed properly. Test case for checking JDK installation has been failed"
+  when: jdk_status.rc != 0

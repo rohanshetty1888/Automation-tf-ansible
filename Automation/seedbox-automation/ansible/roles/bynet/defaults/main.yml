@@ -1,0 +1,5 @@
+---
+bynet_version: 03.07.03.02
+new_pam: 95
+BYNET1IP: 10.16.2.239
+BYNET1MASK: 255.255.0.0

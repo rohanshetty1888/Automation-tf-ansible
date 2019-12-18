@@ -1,0 +1,6 @@
+region = "us-west-2"
+availabilityZone = "us-west-2a"
+count = "3"
+storage_size = "20"
+prefix = "ocean"
+instance_type = "t2.small"

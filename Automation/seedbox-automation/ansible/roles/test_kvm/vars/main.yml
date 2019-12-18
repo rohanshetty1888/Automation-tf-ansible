@@ -1,0 +1,7 @@
+---
+dsc_repository_vm_name: "dsc_repository"
+dsc_repository_static_ip: "192.168.122.77"
+
+viewpoint_vm_name: "viewpoint"
+viewpoint_static_ip: "192.168.122.177"
+

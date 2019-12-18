@@ -1,0 +1,15 @@
+---
+- name: Delete bynet_all_pkg.zip from local system
+  local_action: file path=files/bynet_all_pkg.zip  state=absent
+  ignore_errors: yes
+# copy bynet pkg to local system
+
+- name: download bynet rpm on ansible host
+  local_action: get_url url={{ bynet_packages }}  dest=roles/bynet/files/  headers={{ artifact_key }}
+
+- name: copy  bynet pkg to box
+  copy: src=files/bynet_all_pkg.zip  dest=/tmp/
+  register: copy_pkg
+
+- name: unzip byent packages
+  unarchive: src=/tmp/bynet_all_pkg.zip  dest=/opt remote_src=yes

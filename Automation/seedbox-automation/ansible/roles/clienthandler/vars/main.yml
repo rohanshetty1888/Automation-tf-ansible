@@ -1,0 +1,12 @@
+---
+
+python:
+  version: 3.6
+clienthandler_base_dir: "/opt"
+clienthandler_activemq_url: "localhost"
+clienthandler_activemq_port: "61616"
+clienthandler_activemq_conn: "tcp"
+clienthandler_master_choice: "yes"
+clienthandler_username: "dscuser"
+clienthandler_uid: "600"
+clienthandler_cbb_path: "/var/opt/teradata/dsa/cbb"

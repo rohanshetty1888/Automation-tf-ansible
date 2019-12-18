@@ -1,0 +1,8 @@
+---
+# Description: Following task will get the TD rest package path and It will install TD Rest package
+- name: get the tdrest pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa/*tdrestd* | grep .rpm
+  register: tdrest_pkg_name
+
+- name: install the tdrest pkg
+  shell: rpm -ivh {{ tdrest_pkg_name.stdout }}

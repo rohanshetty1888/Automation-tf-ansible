@@ -1,0 +1,31 @@
+[defaults]
+user=tungsten
+install-directory=/opt/continuent
+replication-user=tungsten
+replication-password={{ tungsten_passwd }}
+replication-port=13306
+application-port=3306
+application-user=app_user
+application-password={{ app_user_passwd }}
+start-and-report=true
+mgr-api-full-access=true
+mgr-api-port=8090
+mgr-api=true
+mgr-api-address=0.0.0.0
+
+[{{ site1 }}]
+topology=clustered
+connectors={{ host }}-conn-1,{{ host }}-conn-2
+master={{ host }}1
+members={{ host }}1,{{ host }}2,{{ host }}3
+
+[{{ site2 }}]
+topology=clustered
+connectors={{ host }}-conn-3,{{ host }}-conn-4
+relay={{ host }}4
+members={{ host }}4,{{ host }}5,{{ host }}6
+relay-source={{ site1 }}
+
+[{{ host }}]
+composite-datasources={{ site2 }},{{ site1 }}
+

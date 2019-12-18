@@ -1,0 +1,55 @@
+---
+- name: Add hostname to /etc/hostname
+  when: inventory_hostname in groups['host1']
+  shell: echo {{ host }}-1 > /etc/hostname 
+
+- name: Add hostname to /etc/sysconfig/network
+  when: inventory_hostname in groups['host1']
+  shell: echo HOSTNAME={{ host }}-1  >> /etc/sysconfig/network
+
+- name: Add hostname to /etc/hostname
+  when: inventory_hostname in groups['host2']
+  shell: echo {{ host }}-2 > /etc/hostname
+
+- name: Add hostname to /etc/sysconfig/network
+  when: inventory_hostname in groups['host2']
+  shell: echo HOSTNAME={{ host }}-2  >> /etc/sysconfig/network
+
+- name: Add hostname to /etc/hostname
+  when: inventory_hostname in groups['host3']
+  shell: echo {{ host }}-3 > /etc/hostname
+
+- name: Add hostname to /etc/sysconfig/network
+  when: inventory_hostname in groups['host3']
+  shell: echo HOSTNAME={{ host }}-3  >> /etc/sysconfig/network
+
+- name: Add hostname to /etc/hostname
+  when: inventory_hostname in groups['host4']
+  shell: echo {{ host }}-conn-1 > /etc/hostname
+
+- name: Add hostname to /etc/sysconfig/network
+  when: inventory_hostname in groups['host4']
+  shell: echo HOSTNAME={{ host }}-conn-1  >> /etc/sysconfig/network
+
+- name: Add hostname to /etc/hostname
+  when: inventory_hostname in groups['host5']
+  shell: echo {{ host }}-conn-2 > /etc/hostname
+
+- name: Add hostname to /etc/sysconfig/network
+  when: inventory_hostname in groups['host5']
+  shell: echo HOSTNAME={{ host }}-conn-2  >> /etc/sysconfig/network
+
+- name: Run soft reboot
+  shell: sleep 2 && /sbin/shutdown -r now
+  async: 1
+  poll: 0
+  ignore_errors: true
+
+- name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+  wait_for:
+    port: 22
+    host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+    search_regex: OpenSSH
+    delay: 10
+  vars:
+    ansible_connection: local

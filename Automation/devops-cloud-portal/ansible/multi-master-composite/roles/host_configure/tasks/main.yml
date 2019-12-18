@@ -1,0 +1,55 @@
+---
+
+- name: add hosts entries in /etc/hosts file
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)|union(groups.host7)|union(groups.host8)
+  lineinfile:
+    dest: /etc/hosts
+    insertafter: '^127.0.0.1'
+    line: '{{ item }}'
+  with_items:
+    - '{{ host1 }}'
+    - '{{ host2 }}'
+    - '{{ host3 }}'
+    - '{{ host4 }}'
+    - '{{ host5 }}'
+    - '{{ host6 }}'
+    - '{{ host13 }}'
+    - '{{ host14 }}'
+    - '{{ host17 }}'
+    - '{{ host18 }}'
+
+
+- name: add hosts entries in /etc/hosts file
+  when: inventory_hostname in groups.host4|union(groups.host5)|union(groups.host6)|union(groups.host9)|union(groups.host10)
+  lineinfile:
+    dest: /etc/hosts
+    insertafter: '^127.0.0.1'
+    line: '{{ item }}'
+  with_items:
+    - '{{ host7 }}'
+    - '{{ host8 }}'
+    - '{{ host9 }}'
+    - '{{ host10 }}'
+    - '{{ host11 }}'
+    - '{{ host12 }}'
+    - '{{ host15 }}'
+    - '{{ host16 }}'
+    - '{{ host19 }}'
+    - '{{ host20 }}'
+
+- name: add iptables rule to accept local connection
+  shell: iptables -A INPUT -i lo -m state --state NEW -j ACCEPT
+
+- name: ensure private key and public one are present for host1
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0600
+    owner: tungsten
+    group: tungsten
+  with_items:
+    - {src: 'id_rsa.host1.j2',dest: '/home/tungsten/.ssh/id_rsa'}
+    - {src: 'id_rsa.pub.host1.j2',dest: '/home/tungsten/.ssh/id_rsa.pub'}
+    - {src: 'authorized_keys.j2',dest: '/home/tungsten/.ssh/authorized_keys'}
+
+

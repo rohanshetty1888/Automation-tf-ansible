@@ -1,0 +1,16 @@
+---
+- hosts:
+    - host1
+    - host2
+    - host3
+    - host4
+    - host5
+  gather_facts: True
+  sudo: yes
+  roles:
+    - add_hostname
+    - mysql
+    - host_configure
+    - config_mysql
+    - setup_cluster
+    

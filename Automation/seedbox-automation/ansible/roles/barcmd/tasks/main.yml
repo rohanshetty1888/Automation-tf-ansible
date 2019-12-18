@@ -1,0 +1,4 @@
+---
+# Description: Following task will install barcmdline package
+- name: install BarCmdLine package
+  include: barcmdline.yml

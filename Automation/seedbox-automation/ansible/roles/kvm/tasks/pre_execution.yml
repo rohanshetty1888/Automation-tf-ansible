@@ -1,0 +1,42 @@
+---
+- name: Creates hooks directory
+  file:
+    path: /etc/libvirt/hooks
+    state: directory
+    mode: 0755
+
+- copy:
+    src: qemu
+    dest: /etc/libvirt/hooks
+    mode: 0755
+
+- service:
+    name: libvirtd
+    state: started
+
+- name: Add IP address of database into /etc/host
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ kvm_dsc_repository_static_ip }}	{{ kvm_dsc_repository_hostname }}"
+    state: present
+
+- name: Add IP address of viewpoint into /etc/host
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ kvm_viewpoint_static_ip }}       {{ kvm_viewpoint_hostname }}"
+    state: present
+
+- name: copy dsc repository xml file 
+  template:
+    src: dsc_repository.xml
+    dest: "{{ kvm_directory }}"
+    mode: 0755
+
+
+- name: copy viewpoint xml file 
+  template:
+    src: viewpoint.xml
+    dest: "{{ kvm_directory }}"
+    mode: 0755
+
+- service:  name=libvirtd   state=restarted

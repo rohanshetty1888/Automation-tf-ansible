@@ -1,0 +1,43 @@
+---
+- name: 'Check if mongodb is installed'
+  command: which mongod
+  register: mongod_check
+  ignore_errors: yes
+  when: "inventory_hostname in groups['docker_swarm_manager']"
+
+- name: 'Install mongodb if not installed'
+  include: 'install_mongodb.yml'
+  when: "mongod_check != '/usr/bin/mongod'
+    and inventory_hostname in groups['docker_swarm_manager']"
+
+
+- name: 'Check if pip is installed'
+  command: which pip
+  register: pip_check
+  ignore_errors: yes
+  when: "inventory_hostname in groups['docker_swarm_manager']"
+
+
+- name: 'Install pymongo'
+  command: pip install pymongo
+  when: "inventory_hostname in groups['docker_swarm_manager']"
+
+- name: add user
+  mongodb_user:
+    state: present
+    name: admin
+    password: admin123
+    roles: "userAdminAnyDatabase"
+    database: admin
+  when: "inventory_hostname in groups['docker_swarm_manager']"
+
+- name: add user for cloud database
+  mongodb_user:
+    login_user: admin
+    login_password: admin123
+    state: present
+    name: cloud
+    password: cloudadmin
+    roles: readWrite,dbAdmin,userAdmin
+    database: cloud
+  when: "inventory_hostname in groups['docker_swarm_manager']"

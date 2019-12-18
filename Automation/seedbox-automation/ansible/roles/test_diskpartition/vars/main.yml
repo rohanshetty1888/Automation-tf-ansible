@@ -1,0 +1,11 @@
+---
+
+total_partitions: "2"
+diskpartitionname: "/dev/sdb1"
+diskpartitiontype: "ext3"
+diskpartitionpath: "/kvm"
+db_disk1_name: "template.qcow2"
+db_disk2_name: "dmadscdata1.qcow2"
+db_disk3_name: "dmadscdata2.qcow2"
+vp_disk1_name: "dsc_disk_image-clone.qcow2"
+vp_disk2_name: "vp_data_disk.qcow2"

@@ -1,0 +1,28 @@
+---
+##
+# TODO: Need to save generated password somewhere on local location
+##
+- name: generate password for root user
+  shell: date | md5sum | head -c 10
+  register: root_password
+
+- name: store root password in root_password file
+  shell: echo {{ root_password.stdout }} > ~/root_password
+
+- name: Change root password
+  user: name=root update_password=always password={{ root_password.stdout }}
+
+- name: generate password for seedbox user
+  shell: date | md5sum | head -c 10
+  register: seedbox_password
+
+- name: Creating seedbox user
+  user:
+    name: seedbox
+  ignore_errors: yes
+
+- name: store password of seedbox user in root_password file
+  shell: echo {{ seedbox_password.stdout }} > ~/seedbox_password 
+
+- name: Change password for seedbox user
+  user: name=seedbox update_password=always password={{ seedbox_password.stdout }}

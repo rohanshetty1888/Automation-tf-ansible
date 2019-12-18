@@ -1,0 +1,7 @@
+---
+# Description: Following tasks will download dsa.tar.gz file. It will also install prerequisites like TD Jdk and TD ActiveMQ
+- name: download the dsa package
+  include: dsa_download.yml
+
+- name: install prerequisities for dsa
+  include: install_prerequisites.yml

@@ -1,0 +1,24 @@
+---
+
+## Following task will remove the dsa.tar.gz file from {{ dsa_pkg_path }}
+## Comment following task if you are keeping dsa.tar.gz manually on box.
+
+- name: include credential file
+  include_vars: creds.yml
+
+- name: remove old tar.gz file
+  local_action: file path=files/dsa.tar.gz  state=absent
+  ignore_errors: yes
+
+- name: Download dsa installer package
+  local_action: get_url url={{ dsa_pkg_url }}  dest=roles/common/files/  headers={{ artifact_key }}
+
+- name: copy dsa.tar.gz to box
+  copy: src=files/dsa.tar.gz dest={{ dsa_pkg_path }}
+
+- name: remove old dsa directory
+  shell: rm -r "{{ dsa_pkg_path }}"/dsa
+  ignore_errors: yes
+  
+- name: Expand dsc installer package
+  unarchive: dest={{ dsa_pkg_path }} copy=no src={{ dsa_pkg_path }}/dsa.tar.gz

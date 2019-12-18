@@ -1,0 +1,4 @@
+---
+- name: unzip db vm
+  shell: tar -xf {{ kvm_path }}/{{ dsc_db_vm_zip }}  -C {{ kvm_path }} 
+#  unarchive: src={{ kvm_path }}/{{ dsc_db_vm_zip }}  dest={{ kvm_path }} remote_src=true

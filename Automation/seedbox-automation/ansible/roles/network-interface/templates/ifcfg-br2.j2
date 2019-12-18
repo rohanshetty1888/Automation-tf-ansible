@@ -1,0 +1,73 @@
+# Teradata system ethernet configuration template:
+
+## Configuration for Teradata network interface.
+#
+# Default settings for interfaces are:
+#
+#       STARTMODE='auto'
+#       MTU=''
+#
+# See the descriptions below for what these settings mean.
+# More detail and other settings are described in the
+# file '/etc/sysconfig/network/ifcfg.template'.
+#
+
+## Type: list(auto,hotplug,ifplugd,nfsroot,manual,off,onboot)
+## Default: auto
+#
+# STARTMODE tells ifup when a interface should be set up. Possible values are:
+# - auto:    start it as soon as the interface is available. Either when booting
+#            or when a device is plugged or initialized at runtime
+# - hotplug: alias for auto, only difference is that configurations with that
+#            startmode are not considered to be mandatory if list of mandatory
+#            devices is derived automatically.
+# - ifplugd: interface will be controlled by ifplugd daemon. (If you like to use
+#            multiple interfaces mutually exclusive you have to set also
+#            IFPLUGD_PRIORITY.)
+# - nfsroot: Nearly like 'auto'. But interfaces with this startmode will never
+#            be shut down via 'rcnetwork stop'. 'ifdown <iface>' still works.
+#            Use this when you have a nfs root filesystem.
+# - manual:  start it only when ifup is called manually
+# - off:     will not be started at all
+# - onboot:  alias for auto, deprecated, only for backward compliance
+STARTMODE='auto'
+
+# DHCP: Uncomment this line if you would like to configure this device
+#       to use DHCP for configuration. Uncomment the DHCLIENT_PRIMARY_DEVICE
+#       if this is the interface that should be configuring the default
+#       route and resolve.conf settings.
+#
+#BOOTPROTO='dhcp'
+#DHCLIENT_PRIMARY_DEVICE='yes'
+
+# STATIC: Uncomment this stanza if you would like to use static configuration
+#         for this device. Replace the values with the appropriate ones for
+#         your site.
+BOOTPROTO='static'
+IPADDR={{ LAB_PUBLIC_IP }}
+NETMASK={{ LAB_PUBLIC_IP_NETMASK }}
+
+## Type:    integer
+## Default: ""
+#
+# Set a specific Maximum Transmission Unit (MTU) for this interface.
+#
+MTU=''
+
+## Type: string
+## Default: ""
+#
+# Specifies the Teradata network profile to use for the interface.
+#
+TERADATA_NETWORK_PROFILE=default.ixgbe.kvmhost
+
+#
+# The following parameters are required for Kvm host. The user should not modify
+# them except the BRIDGE_PORTS that should match the bridge file name, i.e. eth0
+# for ifcfg-br0. Refer to the manpage of ifcfg-bridge for details
+#
+BRIDGE='yes'
+BRIDGE_FORWARDDELAY='0'
+BRIDGE_STP='off'
+BRIDGE_PORTS='{{ PUBLIC_INTERFACE }}'
+

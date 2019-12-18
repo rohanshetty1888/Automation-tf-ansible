@@ -1,0 +1,28 @@
+---
+
+- name: get the ClientHandler pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa | grep ClientHandler | grep tar.gz
+  register: clienthandler_pkg_name
+
+- name: Expand client handler package
+  unarchive: dest={{ dsa_pkg_path }}/dsa copy=no src={{ dsa_pkg_path }}/dsa/{{ clienthandler_pkg_name.stdout }}
+
+- name: get the ClientHandler rpm pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa/ClientHandler* | grep .rpm
+  register: clienthandler_rpm
+
+- name: get the directory path of clienthandler package
+  shell: find "{{ dsa_pkg_path }}"/dsa/ClientHandler* -type d
+  register: clienthandler_pkg_path
+
+- name: Get hostname
+  shell: echo $HOSTNAME
+  register: clienthandler_hostname
+
+- template:
+    src: clienthandlerinstall.sh
+    dest: /tmp/clienthandlerinstall.sh
+    mode: 0775
+
+- name: installing clienthandler package
+  shell: bash /tmp/clienthandlerinstall.sh

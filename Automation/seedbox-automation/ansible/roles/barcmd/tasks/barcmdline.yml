@@ -1,0 +1,33 @@
+---
+- name: get the BARCmdline pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa | grep BARCmdline | grep tar.gz
+  register: barcmdcline_pkg_name
+
+- name: Expand BARCmdline package
+  unarchive: dest={{ dsa_pkg_path }}/dsa copy=no src={{ dsa_pkg_path }}/dsa/{{ barcmdcline_pkg_name.stdout }}
+
+- name: get the BARCmdline rpm pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa/BARCmdline* | grep .rpm
+  register: barcmdcline_rpm
+
+- name: get the directory path of barcmdline package
+  shell: find "{{ dsa_pkg_path }}"/dsa/BARCmdline* -type d
+  register: barcmdcline_pkg_path
+
+- template:
+    src: barcmdlineinstall.sh
+    dest: /tmp/barcmdlineinstall.sh
+    mode: 0775
+
+- lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export JAVA_HOME'
+    line: 'export JAVA_HOME=/opt/teradata/jvm64/jdk7'
+
+- name: source bashrc file
+  shell: "{{ item }}"
+  with_items:
+     - source ~/.bashrc
+
+- name: installing barcmdline package
+  shell: bash /tmp/barcmdlineinstall.sh

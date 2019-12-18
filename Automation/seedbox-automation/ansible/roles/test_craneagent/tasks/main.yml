@@ -1,0 +1,21 @@
+---
+
+- name: Check craneagent is installed or not
+  shell: pip list | grep dss-Agent
+  register: check_craneagent
+  ignore_errors: yes
+
+- name: Role=test_craneagent | Task=CraneAgent Test Case | Description=Verify CraneAgent service installation
+  fail:
+    msg: "Craneagent Service is not installed. Test case for checking craneagent service installation has been failed"
+  when: check_craneagent.rc != 0
+
+- name: check CraneAgent status
+  shell: /etc/init.d/craneagent status | grep "started"
+  register: craneagent_status
+  ignore_errors: yes
+
+- name: Role=test_craneagent | Task=CraneAgent Test Case | Description=Verify CraneAgent service status
+  fail:
+    msg: "CraneAgent Service is not running. State: Down. Test case for checking CraneAgent service status has been failed"
+  when: craneagent_status.rc != 0

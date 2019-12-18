@@ -1,0 +1,20 @@
+---
+
+# install infibend packages
+- name : install infibend packages
+  command: bash /opt/bynet_all_pkg/run.sh
+
+
+#- name: check dependent pkg check
+#  zypper: name={{ item }} state=present
+#  register: check_dependent
+#  with_items:
+#      - libibumad
+#      - ibutils2
+#      - libibmad
+#      - opensm-libs
+#      - opensm
+#      - infiniband-diags
+#      - mstflint
+#      - teradata-connectx-3-fw
+#      - teradata-connect-ib-fw

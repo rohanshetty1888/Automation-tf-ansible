@@ -1,0 +1,23 @@
+---
+
+host1: "{{ privip1 }}   {{ host }}1"
+host2: "{{ privip2 }}   {{ host }}2"
+host3: "{{ privip3 }}   {{ host }}3"
+host4: "{{ ip4 }}  {{ host }}4"
+host5: "{{ ip5 }}  {{ host }}5"
+host6: "{{ ip6 }}  {{ host }}6"
+host13: "{{ privip7 }}   {{ host }}-conn-1"
+host14: "{{ privip8 }}   {{ host }}-conn-2"
+host17: "{{ ip9 }}   {{ host }}-conn-3"
+host18: "{{ ip10 }}   {{ host }}-conn-4"
+
+host7: "{{ ip1 }}   {{ host }}1"
+host8: "{{ ip2 }}   {{ host }}2"
+host9: "{{ ip3 }}   {{ host }}3"
+host10: "{{ privip4 }}   {{ host }}4"
+host11: "{{ privip5 }}   {{ host }}5"
+host12: "{{ privip6 }}   {{ host }}6"
+host15: "{{ privip9 }}   {{ host }}-conn-3"
+host16: "{{ privip10 }}   {{ host }}-conn-4"
+host19: "{{ ip7 }}   {{ host }}-conn-1"
+host20: "{{ ip8 }}   {{ host }}-conn-2"

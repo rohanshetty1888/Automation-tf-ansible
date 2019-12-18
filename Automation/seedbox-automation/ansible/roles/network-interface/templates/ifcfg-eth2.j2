@@ -1,0 +1,24 @@
+# Teradata system ethernet configuration template for Kvm host:
+# #
+# # The configurable network parameters are in the corresponding ifcfg-br file
+# # except MTU for which the same value needs to be set both here and in its
+# # corresponding ifcfg-br file if a non-default value is desired.
+# #
+# BOOTPROTO='static'
+# STARTMODE='auto'
+# MTU=''
+#
+# ## Type: string
+# ## Default: ""
+# #
+# # Specifies the Teradata network profile to use for the interface.
+# #
+TERADATA_NETWORK_PROFILE='default.ixgbe.kvmhost'
+BROADCAST=''
+ETHTOOL_OPTIONS=''
+# #IPADDR='10.88.46.52/24'
+NAME=''
+NETWORK=''
+REMOTE_IPADDR=''
+USERCONTROL='no'
+#

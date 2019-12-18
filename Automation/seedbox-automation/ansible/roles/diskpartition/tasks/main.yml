@@ -1,0 +1,6 @@
+---
+# Description: Following tasks will create partition on seedbox. It will download all required Qcow images on Seedbox.
+#- include: disk_partition.yml 
+
+- include: db_vm.yml 
+#- include: unzip_db_vm.yml

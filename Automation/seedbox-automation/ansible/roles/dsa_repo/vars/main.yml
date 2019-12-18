@@ -1,0 +1,5 @@
+#following 3 variables are related to ftp/http repository for thirdparty tools.
+repo_name: ""
+repo_url: ""
+repo_alias: ""
+

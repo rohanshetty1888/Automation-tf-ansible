@@ -1,0 +1,9 @@
+---
+
+- name: get the stacki tdsles pallet
+  shell: ls {{ pallet_pkg_path }}/ | grep -i {{ pallet_name }}
+  register: td_pallet_path
+
+- name: set the stacki tdsles pallet
+  shell: stack add pallet {{ pallet_pkg_path }}/{{ td_pallet_path.stdout }}
+

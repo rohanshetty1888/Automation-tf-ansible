@@ -1,0 +1,6 @@
+---
+
+- hosts: dsa
+  gather_facts: False
+  roles:
+    - uninstallPackages

@@ -1,0 +1,9 @@
+---
+dsa_pkg_path: "/tmp"
+craneagent_dsaip: "{{ inventory_hostname }}"
+
+craneagent_haproxy_ipaddress: "10.89.13.213" 
+craneagent_auth_hostname: "auth-haproxy.dss.io"
+craneagent_agent_hostname: "agent-register-haproxy.dss.io"
+craneagent_seedhaproxy_hostname: "seed-haproxy.dss.io"
+craneagent_boxhaproxy_hostname: "box-haproxy.dss.io"

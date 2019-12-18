@@ -1,0 +1,30 @@
+---
+# Description: Following task will check Bynet service package installation and service status
+- name: Check bynet is installed or not
+  shell: rpm -qa | grep 'bynet'
+  register: check_bynet
+  ignore_errors: yes
+
+- name: Role=test_bynet | Task=Bynet Test Case | Description=Verify Bynet service installation
+  fail:
+    msg: "Bynet Service is not installed. Test case for checking bynet service installation has been failed"
+  when: check_bynet.rc != 0
+
+- name: check bynet status
+  shell: /etc/init.d/bynet status
+  register: bynet_status
+  ignore_errors: yes
+
+- name: Role=test_bynet | Task=Bynet Test Case | Description=Verify bynet service
+  fail:
+    msg: "Bynet Service is not running. State: Down"
+  when: bynet_status.rc != 0
+
+#- name: Check PMA ID is configured properly or not
+#  shell: cat /etc/opt/teradata/sm3g/smainfo | grep PMA | awk '{print $2}'
+#  register: pmaid_bynet
+
+#- name: Role=test_bynet | Task=Bynet Test Case | Description=Verify Bynet PMAID
+#  fail:
+#    msg: "Bynet PMAID is not configured properly. Test case for checking bynet PMAID has been failed"
+#  when: pmaid_bynet.stdout != "{{ test_bynet_pmaid }}"

@@ -1,0 +1,22 @@
+[defaults]
+user=tungsten
+install-directory=/opt/continuent
+replication-user=tungsten
+replication-password=password
+replication-port=13306
+application-user=tungsten
+application-password=password
+application-port=3306
+start-and-report=true
+connector-bridge-mode=false
+profile-script=~/.bash_profile
+property=manager.api.http.enabled=true
+property=manager.api.http.listenAddress=0.0.0.0
+property=manager.api.http.fullAccess=true
+skip-validation-check=ConnectorUserCheck
+
+[{{ host }}]
+topology=clustered
+members={{ host }}-1,{{ host }}-2,{{ host }}-3
+connectors={{ host }}-1,{{ host }}-2,{{ host }}-3
+master={{ host }}-1

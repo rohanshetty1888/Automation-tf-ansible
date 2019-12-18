@@ -1,0 +1,6 @@
+---
+
+- name: run bootaction command
+  shell: stack add bootaction action="install sles 11.3 vga" kernel="kernel sles-linux-11.3-x86_64" ramdisk="sles-initrd-11.3-x86_64" args="install={{ stackiserverip }}/install/pallets/SLES/11.3/sles/x86_64 autoyast=file:///tmp/profile/autoinst.xml ramdisk_size=300000 biosdevname=0 console=tty0"
+  when: (stackiserverip != "")
+

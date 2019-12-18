@@ -1,0 +1,24 @@
+---
+- name: Add an Apt signing key will not download if present
+  apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=EA312927 state=present
+
+- name: Add mongo apt_repository
+  apt_repository:
+    repo: deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse
+    state: present
+
+- name: Install mongodb-org
+  apt:
+    name: mongodb-org
+    state: latest
+    update_cache: yes
+
+- name: Make sure a service is running
+  service:
+    name: mongod 
+    state: started
+
+- name: enable service httpd and ensure it is not masked
+  service:
+    name: mongod
+    enabled: yes

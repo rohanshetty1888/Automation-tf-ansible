@@ -1,0 +1,10 @@
+---
+# Description: Following tasks will copy private key on Database VM. Using Ssh login , ansible will start Database service.
+- name: copy private-key 
+  copy: src=dsc_db_key  dest=/tmp/ mode=0400
+
+- name: start db service
+  shell: ssh -i /tmp/dsc_db_key  -o "StrictHostKeyChecking=no"  root@{{ database_static_ip }} /etc/init.d/tpa start 
+
+- name: pause of 120 seconds for database service to be running
+  pause: seconds=120

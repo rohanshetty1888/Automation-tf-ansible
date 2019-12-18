@@ -1,0 +1,9 @@
+---
+- name: create disk partion moun pount directory
+  file: path={{ kvm_path }} state=directory
+- name: download DB vm root disk on kvm mountpoint directory
+  shell: wget {{ db_pkg_url }}/{{ root_img }}  -P {{ kvm_path }}
+- name:  downloading db vm disk1 on on kvm mountpoint directory
+  shell: wget {{ db_pkg_url }}/{{ disk1_img }}  -P {{ kvm_path }}
+- name:  downloading db vm disk2 on on kvm mountpoint directory
+  shell: wget {{ db_pkg_url }}/{{ disk2_img }}  -P {{ kvm_path }}

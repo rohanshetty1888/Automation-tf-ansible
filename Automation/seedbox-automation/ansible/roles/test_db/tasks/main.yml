@@ -1,0 +1,15 @@
+---
+
+# Description: Following tasks will check database service status
+#- name: make database box as passwordless/copy private-key
+#  copy: src=files/dsc_db_key  dest=/tmp/ mode=0400
+
+- name: check database status
+  shell: ssh -i /tmp/id_rsa root@{{ dsc_dbs_ipaddress }} pdestate -a | grep 'PDE state is RUN/STARTED' | wc -l
+  register: database_status
+
+- name: DSC Test case- Verify database service
+  fail:
+    msg: "TD Database Service is not running. State: Down"
+  when: database_status.stdout == 0
+

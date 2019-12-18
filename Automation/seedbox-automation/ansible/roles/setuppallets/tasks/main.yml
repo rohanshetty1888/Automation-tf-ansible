@@ -1,0 +1,6 @@
+---
+
+- name: Download pallet
+  include: download.yml
+- name: Add pallet
+  include: add_pallet.yml

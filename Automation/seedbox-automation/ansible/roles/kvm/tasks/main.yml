@@ -1,0 +1,8 @@
+---
+# Description: Following task will prepare prerequisites required for KVM vm's and It will start KVM vm's from downloaded Qcow2 images.
+
+- name: Configure prerequisites required for starting KVM vm's
+  include: pre_execution.yml
+
+- name: Start vms from qcow2 images
+  include: start_vms.yml

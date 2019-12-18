@@ -1,0 +1,72 @@
+---
+# Description: Following tasks will check for KVM package installation and it's service status. It will also check for KVM vm's status and static IP assignment.
+- name: check libvirtd status
+  shell: /etc/init.d/libvirtd status
+  register: libvirt_status
+  ignore_errors: yes
+
+- name: Role=test_kvm | Task=KVM Test Case | Description=Verify Libvirt service status
+  fail:
+    msg: "Libvirt Service is not running. State: Down. Test case for checking Libvirt service has been failed"
+  when: libvirt_status.rc != 0
+
+- name: Check virsh status
+  shell: virsh --version
+  register: virsh_status
+  ignore_errors: yes
+
+- name: Role=test_kvm | Task=KVM Test Case | Description=Verify virsh cli tool functionality
+  fail:
+    msg: "Virsh is not installed or configured properly. State: Down. Test case for checking virsh functionality has been failed"
+  when: virsh_status.rc != 0
+
+- name: Check default network status
+  shell: virsh net-list | grep 'default'
+  register: virsh_net_status
+  ignore_errors: yes
+
+- name: Role=test_kvm | Task=KVM Test Case | Description=Verify libvirt default network status
+  fail:
+    msg: "Libvirt default network is not running. State: Down. Test case for checking libvirt default network has been failed"
+  when: virsh_net_status.rc != 0
+
+- name: Check dsc repository vm status
+  shell: virsh list --all | grep {{ dsc_repository_vm_name }} | grep "running"
+  register: dsc_vm_status
+  ignore_errors: yes
+
+- name: Role=test_kvm | Task=KVM Test Case | Description=Verify dsc repository VM status
+  fail:
+    msg: "DSC repository VM is not running. State: Down Test case for checking database VM status has been failed"
+  when: dsc_vm_status.rc != 0
+
+#- name: Check viewpoint vm status
+#  shell: virsh list --all | grep {{ viewpoint_vm_name }} | grep "running"
+#  register: viewpoint_vm_status
+#  ignore_errors: yes
+
+#- name: Role=test_kvm | Task=KVM Test Case | Description=Verify Viewpoint vm status
+#  fail:
+#    msg: "Viewpoint VM is not running. State: Down Down Test case for checking viewpoint VM status has been failed"
+#  when: viewpoint_vm_status.rc != 0
+#
+- name: Check dsc repository Static IP accessibility
+  shell: ping -c 1 {{ dsc_repository_static_ip }}
+  register: dsc_ip_status
+  ignore_errors: yes
+
+- name: Role=test_kvm | Task=KVM Test Case | Description=Verify dsc repository Static IP accessibility
+  fail:
+    msg: "DSC repository vm is not accessible or static ip is not assigned properly. Test case for checking static ip has been failed"
+  when: dsc_ip_status.rc != 0
+
+#- name: Check viewpoint Static IP accessibility
+#  shell: ping -c 1 {{ viewpoint_static_ip }}
+#  register: viewpoint_ip_status
+#  ignore_errors: yes
+
+#- name: Role=test_kvm | Task=KVM Test Case | Description=Verify viewpoint Static IP accessibility
+#  fail:
+#    msg: "Viewpointvm is not accessible or static ip is not assigned properly. Test case for checking static ip has been failed"
+#  when: viewpoint_ip_status.rc != 0
+

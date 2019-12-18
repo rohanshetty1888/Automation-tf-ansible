@@ -1,0 +1,14 @@
+---
+### Configure bynet
+- name: create bynet directory
+  file: path=/etc/opt/teradata/bynet/ state=directory mode=0755
+
+- name: create netdev file
+  template: src=templates/netdev.j2  dest=/etc/opt/teradata/bynet/netdev mode=0640
+
+- name:  create /etc/opt/teradata/sm3g directory
+  file: path=/etc/opt/teradata/sm3g state=directory mode=0755
+
+- name: update smainfo file
+  template: src=templates/smainfo.j2 dest=/etc/opt/teradata/sm3g/smainfo
+

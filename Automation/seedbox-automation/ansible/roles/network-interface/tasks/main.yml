@@ -1,0 +1,15 @@
+---
+- name: copying network interface file
+  template: src=templates/ifcfg-eth2.j2  dest=/etc/sysconfig/network/ifcfg-eth2
+
+- name: copying network bridge interface file
+  template: src=templates/ifcfg-br2.j2 dest=/etc/sysconfig/network/ifcfg-br2
+
+- name: copying default gateway configuration
+  template: src=templates/route.j2  dest=/etc/sysconfig/network/routes 
+
+- name: Interface up 
+  shell: ifup br2
+
+- name: copy resolve.conf file to backend node
+  local_action: copy src=/etc/resolv.conf  dest=/etc/sudoers.edit    remote_src=yes

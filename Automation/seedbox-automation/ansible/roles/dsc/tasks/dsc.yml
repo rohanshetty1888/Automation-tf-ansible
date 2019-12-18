@@ -1,0 +1,41 @@
+---
+
+- name: get the DSC pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa | grep DSC | grep tar.gz
+  register: dsc_package_name
+
+- name: Expand DSC package
+  unarchive: dest={{ dsa_pkg_path }}/dsa copy=no src={{ dsa_pkg_path }}/dsa/{{ dsc_package_name.stdout }}
+
+- name: get the DSC rpm pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa/DSC* | grep .rpm
+  register: dsc_rpm
+
+- name: get the directory path of DSC package
+  shell: find "{{ dsa_pkg_path }}"/dsa/DSC* -type d
+  register: dsc_package_path
+
+- template:
+    src: DSCinstall.sh
+    dest: /tmp/DSCinstall.sh
+    mode: 0775
+
+- lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export JDK7_64_HOME'
+    line: 'export JDK7_64_HOME=/opt/teradata/jvm64/jdk7'
+
+- name: source bashrc file
+  shell: "{{ item }}"
+  with_items:
+     - source ~/.bashrc
+
+- name: installing DSC package
+  shell: bash /tmp/DSCinstall.sh
+
+- service:
+    name: dsc
+    state: restarted
+
+- name: sleep 10 seconds.. while dsc is initializing
+  pause: seconds=10

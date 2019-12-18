@@ -1,0 +1,15 @@
+swarm-01 ansible_ssh_host="{{ host1 }}"  ansible_ssh_private_key_file=~/.ssh/tungsten.pem   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python2.7
+swarm-02 ansible_ssh_host="{{ host2 }}"   ansible_ssh_private_key_file=~/.ssh/tungsten.pem   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python2.7
+swarm-03 ansible_ssh_host="{{ host3 }}"    ansible_ssh_private_key_file=~/.ssh/tungsten.pem   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python2.7
+
+[docker_engine]
+swarm-01
+swarm-02
+swarm-03
+
+[docker_swarm_manager]
+swarm-01 swarm_labels=deploy
+
+[docker_swarm_worker]
+swarm-02 swarm_labels='["libvirt", "docker", "foo", "bar"]'
+swarm-03

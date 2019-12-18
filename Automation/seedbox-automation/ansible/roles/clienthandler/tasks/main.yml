@@ -1,0 +1,6 @@
+---
+# Description: Following task will install clienthandler package
+- include_vars: vars/main.yml
+
+- name: install the clienthandler
+  include: clienthandler.yml

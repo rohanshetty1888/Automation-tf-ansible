@@ -1,0 +1,22 @@
+---
+# Description: Following task will check TDrest service package installation and service status
+- name: Check tdrest is installed or not
+  shell: rpm -qa | grep 'tdrest'
+  register: check_tdrest
+  ignore_errors: yes
+
+- name: Role=test_TDREST | Task=TDREST Test Case | Description=Verify TDRest service installation
+  fail:
+    msg: "TDrest Service is not installed. Test case for checking tdrestd service installation has been failed"
+  when: check_tdrest.rc != 0
+
+- name: check TDRest status
+  shell: /etc/init.d/tdrestd status
+  register: tdrestd_status
+  ignore_errors: yes
+
+- name: Role=test_TDREST | Task=TDREST Test Case | Description=Verify tdrestd service status
+  fail:
+    msg: "TDrestd Service is not running. State: Down. Test case for checking tdrestd service status has been failed"
+  when: tdrestd_status.rc != 0
+

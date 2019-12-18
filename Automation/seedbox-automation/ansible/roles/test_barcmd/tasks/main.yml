@@ -1,0 +1,11 @@
+---
+# Description: Following task will check whether barcmd package is installed or not
+- name: Check barcmd is installed or not
+  shell: rpm -qa | grep 'BARCmdline-' 
+  register: check_barcmd
+  ignore_errors: yes
+
+- name: Role=test_BarCmd | Task=BarCmd Test Case | Description=Verify BARCmdline service installation
+  fail:
+    msg: "Test case for checking BARCmdline installation has failed. BARCmdline Service is not installed."
+  when: check_barcmd.rc != 0

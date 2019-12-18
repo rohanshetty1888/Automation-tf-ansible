@@ -1,0 +1,10 @@
+---
+kvm_dsc_repository_vm_name: "dsc_repository"
+kvm_dsc_repository_xml_path: "{{ kvm_path }}dsc_repository.xml"
+kvm_dsc_repository_hostname: "dsurepo"
+kvm_dsc_repository_static_ip: "192.168.122.77"
+
+kvm_viewpoint_vm_name: "viewpoint"
+kvm_viewpoint_xml_path: "{{ kvm_path }}viewpoint.xml"
+kvm_viewpoint_hostname: "viewpoint"
+kvm_viewpoint_static_ip: "192.168.122.177"

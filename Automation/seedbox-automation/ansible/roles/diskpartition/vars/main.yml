@@ -1,0 +1,10 @@
+---
+disk_name: "/dev/sdb"   # Define disk partation name /dev/sdb sdc etc
+disk_partion_number: 1
+disk_partion_size: 100%
+disk_fstype: ext3
+db_pkg_url: "http://10.**.**.**/dsa-packages/"
+root_img: "template.qcow2"
+disk1_img: "dmadscdata1.qcow2"
+disk2_img: "dmadscdata2.qcow2"
+kvm_path: "kvm"

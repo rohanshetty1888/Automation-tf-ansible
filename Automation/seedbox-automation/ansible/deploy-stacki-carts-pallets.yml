@@ -1,0 +1,8 @@
+---
+
+- hosts: stackiserver
+  become: yes
+  become_method: sudo
+  roles:
+    - setuppallets
+    - setupcarts

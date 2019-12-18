@@ -1,0 +1,7 @@
+---
+
+host1: "{{ host }}-1"
+host2: "{{ host }}-2"
+host3: "{{ host }}-3"
+host4: "{{ host }}-conn-1"
+host5: "{{ host }}-conn-2"

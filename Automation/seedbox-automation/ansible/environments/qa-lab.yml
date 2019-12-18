@@ -1,0 +1,29 @@
+---
+## diskpartitio  role variables
+disk_name: "/dev/sdb"   # Define disk partation name /dev/sdb sdc etc
+disk_partion_number: 1
+disk_partion_size: 100%
+disk_fstype: ext3
+db_pkg_url: "http://192.168.0.37/kvm" # Define the stacki frontend user where all kvm images stored.
+root_img: "template.qcow2"
+disk1_img: "dmadscdata1.qcow2"
+disk2_img: "dmadscdata2.qcow2"
+kvm_path: "/var/opt/teradata/kvm/"    # Define the path of directory where kvm  images will stored.
+## kvm role variables
+kvm_directory: "{{ kvm_path }}"       # Do not modify this variables
+
+## Comon role variables
+artifactory_url: "https://artifactory.artifacts-qa.qateradatacloud.com/artifactory"
+artifactory_repo: "pkgs-external-released-sd"
+artifactory_sub_folder: "tmc/DSS"
+artifactory_full_path: "{{ artifactory_url }}/{{ artifactory_repo }}/{{ artifactory_sub_folder }}"
+## Packages URLS
+dss_agent_version: "dss-Agent-0.1.1.tar.gz"
+dsa_pkg_url: "{{ artifactory_full_path }}/dsa-packages/16.10/201711241600/dsa.tar.gz"
+pythonxml_pkg_url: "{{ artifactory_full_path }}/dsa-packages/16.10/201711241600/python-xml-2.6.9-0.35.1.x86_64.rpm"
+
+bynet_packages: "{{ artifactory_full_path }}/bynet-packages/201711241600/bynet_all_pkg.zip"
+
+craneagent_pkg_url: "{{ artifactory_full_path }}/dsa-packages/16.10/201711241600/dss-Agent-0.1.1.tar.gz"
+craneagent_crt_url: "{{ artifactory_full_path }}/dsa-packages/16.10/201711241600/ca-certificates.crt"
+craneagent_dependent_pkg_url: "{{ artifactory_full_path }}/dsa-packages/16.10/201711241600/dss-agent-requirement.tar"

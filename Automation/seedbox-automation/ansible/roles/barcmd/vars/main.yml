@@ -1,0 +1,7 @@
+---
+barcmd_base_dir: "/opt"
+barcmd_activemq_url: "localhost"
+barcmd_activemq_port: "61616"
+barcmd_activemq_conn: "tcp"
+barcmd_dsc_hostname: "localhost"
+barcmd_dsc_unique_name: "DSC16"

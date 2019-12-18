@@ -1,0 +1,30 @@
+---
+
+- name: Log into DockerHub
+  shell: docker login -u sagyops --password {{ passwd }}
+
+- name: Copy docker stack file to servers
+  template:
+    src: docker-stack.yml.j2
+    dest: /home/ubuntu/docker-stack.yml
+    mode: 0600
+    owner: root
+    group: root
+
+- name: docker pull latest image
+  shell: cd /home/ubuntu/ && docker-compose -f docker-stack.yml pull workers dashboard user engine db mongo
+
+- name: Remove unused docker images from host.
+  shell: docker rmi -f $(docker images | grep "<none>" | awk "{print \$3}")
+  ignore_errors: yes
+
+- name: delete exited state containers
+  shell: docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm
+  ignore_errors: yes
+
+- name: deploy stack on docker swarm
+  when: "inventory_hostname in groups['docker_swarm_manager']" 
+  shell: cd /home/ubuntu/ && docker stack deploy --compose-file docker-stack.yml vdba
+
+
+  

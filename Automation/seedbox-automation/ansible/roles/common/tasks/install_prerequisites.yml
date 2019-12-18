@@ -1,0 +1,58 @@
+---
+- name: include credential file
+  include_vars: creds.yml
+
+- name: remove old python-xml file
+  local_action: file path=files/python-xml-2.6.9-0.35.1.x86_64.rpm  state=absent
+  ignore_errors: yes
+
+- name: download python xml package
+  local_action: get_url url={{ pythonxml_pkg_url }}   dest=roles/common/files/   headers={{ artifact_key }} 
+
+- name: copy python-xml to box
+  copy: src=files/python-xml-2.6.9-0.35.1.x86_64.rpm dest={{ dsa_pkg_path }}
+
+- name: install python-xml dependecy
+  shell: rpm -ivh {{ dsa_pkg_path }}/python-xml.rpm
+  ignore_errors: yes
+
+- name: get the jdk pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa/*teradata*jdk* | grep .rpm
+  register: jdk_pkg_name
+
+- name: install the td jdk pkg
+  shell: rpm -ivh {{ jdk_pkg_name.stdout }}
+  ignore_errors: yes
+
+- name: remove JDK 1.8 from td system
+  shell: rpm -e teradata-jdk8
+  ignore_errors: yes
+
+- name: copy the bashrc
+  shell: cp /etc/skel/.bashrc ~
+  args:
+    creates: ~/.bashrc
+
+- lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export JDK7_64_HOME'
+    line: 'export JDK7_64_HOME=/opt/teradata/jvm64/jdk7'
+
+- lineinfile:
+    dest: ~/.bashrc
+    regexp: '^export JAVA_HOME'
+    line: 'export JAVA_HOME=/opt/teradata/jvm64/jdk7'
+
+- name: source bashrc file
+  shell: source ~/.bashrc
+
+- name: get the activemq pkg path
+  shell: ls {{ dsa_pkg_path }}/dsa/tdactivemq*.rpm
+  register: activemq_pkg_name
+
+- name: install the td activemq pkg
+  shell: rpm -ivh {{ activemq_pkg_name.stdout }}
+
+- name: start tdactivemq service
+  service: name=tdactivemq state=started
+#  local_action: shell ssh -tt root@{{ inventory_hostname }} /etc/init.d/tdactivemq start

@@ -1,0 +1,14 @@
+---
+- name: copy hosts file
+  copy: src=files/hosts   dest=/etc/hosts
+
+- name: check ntp,teradata-ntp package install on system
+  zypper: name={{ item }}  state=present
+  register: ntp_packeges
+  with_items:
+     - ntp
+     - teradata-ntp
+
+- name: copy ntp.conf file 
+  copy: src=files/ntp.conf  dest=/etc/ntp.conf
+  when: ntp_packeges|succeeded

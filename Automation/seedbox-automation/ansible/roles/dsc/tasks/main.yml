@@ -1,0 +1,7 @@
+---
+# Description: Following task will install DSC service on seedbox
+- name: include credential file
+  include_vars: creds.yml
+
+- name: Install the DSC
+  include: dsc.yml

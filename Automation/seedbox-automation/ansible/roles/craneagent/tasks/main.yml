@@ -1,0 +1,83 @@
+---
+
+- name: include credential file
+  include_vars: creds.yml
+
+- name: remove old tar.gz of craneagent 
+  local_action: file path=files/dss-Agent-0.1.1.tar.gz state=absent
+  ignore_errors: yes
+
+- name: Download Crane agent tar file
+  local_action: get_url url={{ craneagent_pkg_url }}   dest=roles/craneagent/files/  headers={{ artifact_key }}
+
+- name: remove old craneagent dependent packages
+  local_action: file path=files/dss-agent-requirement.tar state=absent
+  ignore_errors: yes
+
+- name: Download Crane agent dependent packages tar file
+  local_action: get_url url={{ craneagent_dependent_pkg_url }}   dest=roles/craneagent/files/  headers={{ artifact_key }}
+
+
+- name: copy agent-dependency packages
+  copy: src=files/dss-agent-requirement.tar  dest=/tmp/
+
+- name: unarchive agent-dependency packages
+  unarchive: src=/tmp/dss-agent-requirement.tar   dest=/tmp/ remote_src=yes
+  
+- name: install agent-dependency packages
+  command: bash /tmp/dss-agent-requirement/install.sh 
+
+- name: copy Crane agent tar file to box
+  copy: src=files/{{ dss_agent_version }} dest={{ dsa_pkg_path }}
+  
+- name: installing Crane agent on box
+  command: pip install {{ dsa_pkg_path }}/{{ dss_agent_version }}
+
+- name: Creates directory for craneagent creds
+  file:  path=/etc/opt/teradata/dss  state=directory   mode=0777
+
+- name: remove old crt file
+  local_action: file path=files/ca-certificates.crt state=absent
+  ignore_errors: yes
+
+- name: download crt file
+  local_action: get_url url={{ craneagent_crt_url }} dest=roles/craneagent/files/   headers={{ artifact_key }}
+
+- name: copy cert file of haproxy
+  copy: src=files/ca-certificates.crt  dest=/etc/ssl/certs/
+
+- name: Add entry of auth in /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ craneagent_haproxy_ipaddress }}   {{ craneagent_auth_hostname }}"
+    state: present
+
+- name: Add entry of agent in /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ craneagent_haproxy_ipaddress }}   {{ craneagent_agent_hostname }}"
+    state: present
+
+- name: Add entry of seedbox haproxy in /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ craneagent_haproxy_ipaddress }}   {{ craneagent_seedhaproxy_hostname }}"
+    state: present
+
+- name: Add entry of boxhaproxy in /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ craneagent_haproxy_ipaddress }}   {{ craneagent_boxhaproxy_hostname }}"
+    state: present
+
+- name: copy config.yml in /usr/local/lib64/python2.6/site-packages/craneagent/ folder
+  template:  src=files/config.yml dest=/usr/local/lib64/python2.6/site-packages/craneagent/config/config.yml   mode=0775
+
+- name: copy config.yml /etc/opt/teradata/dss/ folder
+  copy: src=files/config.yml dest=/etc/opt/teradata/dss/config.yml mode=0775 
+
+- name: copy craneagent start scritp in  /etc/init.d/ folder
+  template: src=templates/craneagent  dest=/etc/init.d/craneagent  mode=0755
+
+- name: start craneagent
+  local_action: shell ssh root@{{ inventory_hostname }} /etc/init.d/craneagent start &

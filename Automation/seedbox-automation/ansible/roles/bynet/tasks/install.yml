@@ -1,0 +1,8 @@
+---
+# install bynet 
+- name: install bynet
+  shell: rpm -ivh /opt/bynet_all_pkg/bynet/bynet-{{ bynet_version }}-1_dkms.x86_64.rpm
+  register: bynet_install
+
+- name: restart bynet service
+  shell: /etc/init.d/bynet restart

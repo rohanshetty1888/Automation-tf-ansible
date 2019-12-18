@@ -1,0 +1,19 @@
+##
+# Description: This is playbook for installing DSA components on database VM. Playbook will run ansible test cases after every role execution f# or verifying deployment of dsa components.
+##
+---
+- hosts: dsa
+  gather_facts: False
+  roles:
+    - common
+    - test_common
+    - dsc           #Needs database 
+    - test_dsc
+    - clienthandler
+    - test_clienthandler
+    - barcmd        #Needs jdk
+    - test_barcmd
+    - tdrest
+    - test_tdrest
+    - craneagent
+#    - test_craneagent

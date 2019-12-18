@@ -1,0 +1,9 @@
+---
+- name: include credential file
+  include_vars: creds.yml
+
+- include: copy-pkg.yml
+- include: dependent_package_install.yml
+- include: configure.yml
+- include: ntp_hosts.yml
+- include: install.yml

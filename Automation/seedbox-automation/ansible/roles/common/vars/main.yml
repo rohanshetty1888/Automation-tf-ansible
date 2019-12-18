@@ -1,0 +1,5 @@
+---
+
+#dsa_pkg_path is a path where dsa.tar.gz file will be stored
+dsa_pkg_path: "/tmp" # Recommended: /tmp  or /opt 
+

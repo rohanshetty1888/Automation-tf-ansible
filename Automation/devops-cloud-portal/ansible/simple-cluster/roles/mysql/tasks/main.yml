@@ -1,0 +1,74 @@
+---
+
+- name: Install MySQL
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  yum: name={{ item }} update_cache=yes  state=present
+  with_items:
+  - mysql-devel
+  - python-devel
+  - gcc
+  - MySQL-python
+  - python-pip
+  - mysql-server
+
+- name: Installing pip dependencies
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  pip:
+    name: MySQL-python
+    extra_args: --index=https://pypi.python.org/pypi/
+
+- name: Start the MySQL service
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  service: 
+    name: mysqld
+    state: started
+    enabled: true
+
+# create root .my.cnf config file
+- name: Add .my.cnf
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  template: src=my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
+
+- name: Set root Password
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  mysql_user: login_password={{ mysql_root_password }} check_implicit_admin=yes name=root host={{ item }} password={{ mysql_root_password }} state=present 
+  with_items:
+    - localhost
+    - 127.0.0.1
+    - ::1
+
+- name: Reload privilege tables
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - FLUSH PRIVILEGES
+  changed_when: False
+
+- name: Remove anonymous users
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User=''
+  changed_when: False
+
+- name: Disallow root login remotely
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')
+  changed_when: False
+
+- name: Remove test database and access to it
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - DROP DATABASE IF EXISTS test
+    - DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%'
+  changed_when: False
+
+- name: Reload privilege tables
+  when: inventory_hostname in groups.host1|union(groups.host2)|union(groups.host3)
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - FLUSH PRIVILEGES
+  changed_when: False

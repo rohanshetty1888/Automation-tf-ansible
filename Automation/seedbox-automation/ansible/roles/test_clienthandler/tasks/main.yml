@@ -1,0 +1,22 @@
+---
+
+# Description: Following task will check for clienthandler package installation and clienthandler service status
+- name: Check clienthandler is installed or not
+  shell: rpm -qa | grep 'ClientHandler-' 
+  register: check_clienthandler
+  ignore_errors: yes
+
+- name: Role=test_clienthandler | Task=Clienthandler Test Case | Description=Verify clienthandler service installation
+  fail:
+    msg: "DSC Service is not installed. Test case for checking DSC installation has been failed"
+  when: check_clienthandler.rc != 0
+
+- name: Check clienthandler service status
+  shell: /etc/init.d/clienthandler status | grep "is running" 
+  register: clienthandler_status
+  ignore_errors: yes
+
+- name: Role=test_clienthandler | Task=Clienthandler Test Case | Description=Verify Clienthandler service status
+  fail:
+    msg: "Clienthandler Service is not running. State: Down"
+  when: clienthandler_status.rc != 0

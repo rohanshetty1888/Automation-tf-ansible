@@ -1,0 +1,4 @@
+---
+# Description: Following task will add provided URL in zypper repository
+- name: add ftp zypper repo
+  shell: zypper ar -c -f -n "{{ repo_name }}" "{{ repo_url }}" "{{ repo_alias }}"

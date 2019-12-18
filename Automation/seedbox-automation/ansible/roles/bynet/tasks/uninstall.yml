@@ -1,0 +1,7 @@
+---
+# uninstalling bynet older pkg
+- name:  bynet uninstall
+  zypper: name=bynet state=absent
+  register: bynet_version
+  ignore_errors: True
+#  when: check_dependent | success

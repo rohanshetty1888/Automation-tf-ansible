@@ -1,0 +1,143 @@
+version: "3"
+services:
+
+  redis:
+    image: redis:latest
+    ports: 
+      - 6379:6379
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  engine:
+    image: sagyops/continuent:micro_pe
+    ports:
+      - 5001:5001
+    depends_on:
+      - redis
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - CONTINUENT_PE_CONFIG=development
+      - TERRAFORM_PATH=/home/ubuntu/devops-cloud-portal/terraform
+      - ANSIBLE_PATH=/home/ubuntu/devops-cloud-portal/ansible
+      - CONTINUENT_USERS_CONFIG=development
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - USER_HOST=user
+      - USER_PORT=5000
+      - AWS_ACCESS_KEY_ID=AKIAIYF2LKE4KXYQDDQA
+      - AWS_SECRET_ACCESS_KEY=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
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+
+  user:
+    image: sagyops/continuent:micro_user
+    depends_on:
+      - db
+    ports:
+      - 5000:5000
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - CONTINUENT_PE_CONFIG=development
+      - CONTINUENT_USERS_CONFIG=development
+      - DB_USE=root
+      - DB_PASS=admin123
+      - DB_HOST=db:3306
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  dashboard:
+    image: sagyops/continuent:vdba_dashboard
+    ports:
+      - 80:80
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - CONTINUENT_PE_CONFIG=development
+      - TERRAFORM_PATH=/home/ubuntu/devops-cloud-portal/terraform
+      - ANSIBLE_PATH=/home/ubuntu/devops-cloud-portal/ansible
+      - CONTINUENT_USERS_CONFIG=development
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  workers:
+    image: sagyops/continuent:micro_worker
+    depends_on:
+      - redis
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == worker]
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - CONTINUENT_PE_CONFIG=development
+      - TERRAFORM_PATH=/home/ubuntu/devops-cloud-portal/terraform
+      - ANSIBLE_PATH=/home/ubuntu/devops-cloud-portal/ansible
+      - CONTINUENT_USERS_CONFIG=development
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - AWS_ACCESS_KEY_ID=AKIAIYF2LKE4KXYQDDQA
+      - AWS_SECRET_ACCESS_KEY=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
+
+  db:
+    image: sagyops/continuent:mysql5.7
+    volumes:
+       - db_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+
+  mongo:
+    image: mongo:4
+    ports:
+      - 27017:27017
+    volumes:
+       - mongo_data:/data/db
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+
+volumes:
+  db_data:
+  mongo_data:

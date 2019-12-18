@@ -1,0 +1,25 @@
+---
+
+- name: install libvirt
+  package:
+    name: libvirt
+    state: present
+
+- service:
+    name: libvirtd
+    state: started
+
+- name: install virt-manager
+  package:
+    name: virt-manager
+    state: present
+
+- name: install bridge-utils package
+  package:
+    name: bridge-utils
+    state: present
+
+- name: install kvm package
+  package:
+    name: kvm
+    state: present

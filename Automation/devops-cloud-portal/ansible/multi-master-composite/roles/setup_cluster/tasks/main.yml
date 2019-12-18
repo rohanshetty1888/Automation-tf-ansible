@@ -1,0 +1,50 @@
+---
+
+- name: Download the tungsten.tar.gz
+  get_url:
+    url: https://s3.amazonaws.com/edward-collaboration/tungsten-clustering-{{ version }}.tar.gz
+    dest: /opt/continuent/software
+    owner: tungsten
+    group: tungsten
+    mode: 0777
+
+- name: extract the tungsten.tar.gz file
+  unarchive:
+    src: /opt/continuent/software/tungsten-clustering-{{ version }}.tar.gz
+    dest: /opt/continuent/software
+    copy: "no"
+    owner: tungsten
+    group: tungsten
+
+- name: copy the tungsten.ini file.
+  template:
+    src: '{{ tungsten_file }}'
+    dest: /etc/tungsten.ini
+    mode: 0644
+    owner: root
+    group: root
+
+- name: Run validate cluster setup
+  shell: cd /opt/continuent/software/tungsten-clustering-{{ version }} && ./tools/tpm validate
+  become: yes
+  become_user: tungsten
+
+- name: deploy simple tungsten cluster
+  shell: cd /opt/continuent/software/tungsten-clustering-{{ version }} && ./tools/tpm install
+  become: yes
+  become_user: tungsten
+
+
+- name: Update bashrc for user
+  lineinfile:
+    dest: /home/tungsten/.bashrc
+    line: ". /opt/continuent/share/env.sh"
+    regexp: "^"
+    owner: tungsten
+    group: tungsten
+    state: present
+    insertafter: EOF
+
+- name: add services on boot level
+  shell: sudo bash /opt/continuent/tungsten/cluster-home/bin/deployall
+

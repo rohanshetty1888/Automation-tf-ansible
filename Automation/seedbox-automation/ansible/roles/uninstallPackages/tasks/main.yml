@@ -1,0 +1,104 @@
+---
+
+- name: Check tdactivemq is installed or not
+  shell: rpm -qa | grep 'tdactivemq-'
+  register: check_tdactivemq
+  ignore_errors: yes
+
+- service:
+    name: tdactivemq
+    state: stopped
+  when: check_tdactivemq.rc == 0
+
+- name: remove tdactivemq package
+  shell: zypper -n remove tdactivemq
+  when: check_tdactivemq.rc == 0
+
+
+
+- name: Check teradata-jdk7 is installed or not
+  shell: rpm -qa | grep 'teradata-jdk7'
+  register: check_teradata_jdk7
+  ignore_errors: yes
+
+- name: remove teradata-jdk7 package
+  shell: zypper -n remove teradata-jdk7 
+  when: check_teradata_jdk7.rc == 0
+
+
+
+- name: Check ClientHandler is installed or not
+  shell: rpm -qa | grep 'ClientHandler-'
+  register: check_clienthandler
+  ignore_errors: yes
+
+- service:
+    name: clienthandler
+    state: stopped
+  when: check_clienthandler.rc == 0
+
+- name: remove clienthandler package
+  package: 
+    name: ClientHandler
+    state: absent
+  when: check_clienthandler.rc == 0
+
+
+
+- name: Check BARCmdline is installed or not
+  shell: rpm -qa | grep 'BARCmdline-'
+  register: check_barcmdline
+  ignore_errors: yes
+
+- name: remove BARCmdline package
+  package: 
+    name: BARCmdline
+    state: absent
+  when: check_barcmdline.rc == 0
+
+
+
+- name: Check BARPortlets is installed or not
+  shell: rpm -qa | grep 'BARPortlets-'
+  register: check_barportlets
+  ignore_errors: yes
+
+- name: remove BARPortlets package
+  package: 
+    name: BARPortlets
+    state: absent
+  when: check_barportlets.rc == 0
+
+
+
+- name: Check DSC is installed or not
+  shell: rpm -qa | grep 'DSC-'
+  register: check_dsc
+  ignore_errors: yes
+
+- service:
+    name: dsc
+    state: stopped
+  when: check_dsc.rc == 0
+
+- name: remove DSC package
+  shell: zypper -n remove dsc
+  when: check_dsc.rc == 0
+
+
+
+- name: Check TDRest is installed or not
+  shell: rpm -qa | grep 'tdrest'
+  register: check_tdrest
+  ignore_errors: yes
+
+- service:
+    name: tdrestd
+    state: stopped
+  when: check_tdrest.rc == 0
+
+- name: remove Tdrestd package
+  package:
+    name: tdrestd
+    state: absent
+  when: check_tdrest.rc == 0 

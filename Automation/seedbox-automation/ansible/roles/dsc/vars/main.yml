@@ -1,0 +1,32 @@
+---
+
+python:
+  version: 3.1
+
+dsc_activemq_url: "localhost"
+dsc_activemq_port: "61616"
+dsc_activemq_conn: "tcp"
+
+#following variables are the details of the database repository box
+dsc_dbs_hostname: "{{ dsc_repository_hostname | default('dsurepo') }}"
+dsc_dbs_ipaddress: "{{ dsc_repository_ip | default('192.168.122.77') }}"
+dsc_dbs_superuser: "dbc"
+
+
+#following variables are the details of the viewpoint box
+dsc_unique_name: "DSC16"
+dsc_dbs_user_size: "8"
+#dsc_dbs_user_size: "50"
+dsc_dbs_admin: "dbc"
+dsc_cam_env_clustered: "no"
+dsc_cam_url: "localhost"
+dsc_cam_port: "61616"
+dsa_rest_port: "9090"
+dsc_run_user: "dscuser"
+dsc_userid: "600"
+
+#following variables are the details of the viewpoint box
+dsc_viewpoint_url: "{{ viewpoint_hostname | default('viewpoint') }}"
+dsc_viewpoint_port: "80"
+dsc_viewpoint_type: "http"
+

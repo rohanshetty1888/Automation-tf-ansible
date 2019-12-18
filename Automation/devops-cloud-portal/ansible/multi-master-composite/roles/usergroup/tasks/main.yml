@@ -1,0 +1,75 @@
+---
+ 
+- name: Copy sudoers file for safety
+  command: cp -f /etc/sudoers /etc/sudoers.tmp
+ 
+- name: Create sudoers file backup
+  command: cp -f /etc/sudoers /etc/sudoers.bak
+
+- name: Create admins group
+  group: name=admins system=yes state=present
+
+- name: make sure we can sudo as admin group
+  lineinfile: dest=/etc/sudoers.tmp state=present regexp='^%admins' line='%admins ALL=(ALL) NOPASSWD:ALL'
+ 
+- name: also make sure ssh-agent works via sudo
+  lineinfile: dest=/etc/sudoers.tmp state=present regexp='^Defaults env_keep\+\=SSH_AUTH_SOCK' line='Defaults env_keep+=SSH_AUTH_SOCK'
+     
+- name: Adding Multiple Users and Appending in Sudoers file
+  user: 
+    name: "{{ item }}"
+    groups: admins
+    append: yes
+  with_items:
+    - tungsten
+
+- name: Final sudoers file check
+  shell: visudo -q -c -f /etc/sudoers.tmp && cp -f /etc/sudoers.tmp /etc/sudoers
+
+- name: create stage directory 
+  file:
+    path: /opt/continuent/software/conf
+    state: directory
+    owner: tungsten
+    group: tungsten
+    mode: 0755
+
+- name: create conf directory
+  file:
+    path: /opt/continuent/software/replicator.conf
+    state: directory
+    owner: tungsten
+    group: tungsten
+    mode: 0755
+
+- name: Adding the path in the Profile files
+  lineinfile: dest=/home/tungsten/.bash_profile line='export CONTINUENT_PROFILES=/opt/continuent/software/conf' insertafter='EOF' regexp='export CONTINUENT_PROFILES=/opt/continuent/software/conf' state=present
+
+- name: Adding the path in the Profile files
+  lineinfile: dest=/home/tungsten/.bash_profile line='export REPLICATOR_PROFILES=/opt/continuent/software/replicator.conf' insertafter='EOF' regexp='export REPLICATOR_PROFILES=/opt/continuent/software/replicator.conf' state=present
+
+- name: Source the bash_profile file
+  shell: source /home/tungsten/.bash_profile
+
+- name: Change the open file limits
+  lineinfile:
+    dest: /etc/security/limits.conf
+    insertafter: '^# End of file'
+    line: '{{ item }}'
+  with_items:
+    - 'tungsten    -    nofile    65535'
+    - 'mysql       -    nofile    65535'
+    - 'tungsten    -    nproc    8096'
+    - 'mysql       -    nproc    8096'
+
+- name: Create .ssh directory
+  file:
+    path: /home/tungsten/.ssh
+    state: directory
+    owner: tungsten
+    group: tungsten
+    mode: 0700
+
+- name: Copy ssh config file to all host
+  template: src=config.j2 dest=/home/tungsten/.ssh/config owner=tungsten group=tungsten mode=0400
+

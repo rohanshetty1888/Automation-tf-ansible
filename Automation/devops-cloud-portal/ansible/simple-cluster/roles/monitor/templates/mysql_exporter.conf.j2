@@ -1,0 +1,9 @@
+description     "Mysql Exporter"
+author          "Continuent"
+
+start on (runlevel [345] and started network)
+stop on (runlevel [!345] or stopping network)
+
+respawn
+
+exec /usr/local/bin/mysqld_exporter --config.my-cnf="/etc/mysql_exporter/.my.cnf"

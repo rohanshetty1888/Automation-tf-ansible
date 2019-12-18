@@ -1,0 +1,144 @@
+---
+
+- name: Adding Multiple Users and Appending in Sudoers file
+  user:
+    name: "{{ item }}"
+    groups: mysql
+    append: yes
+  with_items:
+    - tungsten
+
+- name: stop mysqld service
+  service:
+    name: mysqld
+    state: stopped
+
+- name: ensure my.cnf file configuration for host1
+  when: inventory_hostname in groups['host1']
+  template:
+    src: my.cnf1.j2 
+    dest: /etc/my.cnf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: ensure my.cnf file configuration for host2
+  when: inventory_hostname in groups['host2']
+  template:
+    src: my.cnf2.j2
+    dest: /etc/my.cnf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: ensure my.cnf file configuration for host3
+  when: inventory_hostname in groups['host3']
+  template:
+    src: my.cnf3.j2
+    dest: /etc/my.cnf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: ensure my.cnf file configuration for host4
+  when: inventory_hostname in groups['host4']
+  template:
+    src: my.cnf4.j2
+    dest: /etc/my.cnf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: ensure my.cnf file configuration for host5
+  when: inventory_hostname in groups['host5']
+  template:
+    src: my.cnf5.j2
+    dest: /etc/my.cnf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: ensure my.cnf file configuration for host6
+  when: inventory_hostname in groups['host6']
+  template:
+    src: my.cnf6.j2
+    dest: /etc/my.cnf
+    mode: 0644
+    owner: root
+    group: root
+
+- name: restart mysqld service
+  service:
+    name: mysqld
+    state: restarted
+
+- name: create mysql tungsten user
+  mysql_user:
+    name: tungsten
+    host: '%'
+    password: "{{ tungsten_passwd }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Create mysql user for host1
+  when: inventory_hostname in groups['host1']
+  mysql_user:
+    name: tungsten
+    host: "{{ host }}1"
+    password: "{{ tungsten_passwd }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Create mysql user for host2
+  when: inventory_hostname in groups['host2']
+  mysql_user:
+    name: tungsten
+    host: "{{ host }}2"
+    password: "{{ tungsten_passwd }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Create mysql user for host3
+  when: inventory_hostname in groups['host3']
+  mysql_user:
+    name: tungsten
+    host: "{{ host }}3"
+    password: "{{ tungsten_passwd }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Create mysql user for host4
+  when: inventory_hostname in groups['host4']
+  mysql_user:
+    name: tungsten
+    host: "{{ host }}4"
+    password: "{{ tungsten_passwd }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Create mysql user for host5
+  when: inventory_hostname in groups['host5']
+  mysql_user:
+    name: tungsten
+    host: "{{ host }}5"
+    password: "{{ tungsten_passwd }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Create mysql user for host6
+  when: inventory_hostname in groups['host6']
+  mysql_user:
+    name: tungsten
+    host: "{{ host }}6"
+    password: "{{ tungsten_passwd }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+
+- name: Create app_user and revoke its super on access
+  command: 'mysql -ne "{{ item }}"'
+  with_items:
+    - CREATE USER app_user@'%' IDENTIFIED BY '{{ app_user_passwd }}';
+    - GRANT ALL ON *.* TO app_user@'%';
+    - REVOKE SUPER ON *.* FROM app_user@'%';
+  changed_when: False
+

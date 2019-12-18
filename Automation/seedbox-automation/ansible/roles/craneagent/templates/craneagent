@@ -1,0 +1,46 @@
+#! /bin/sh
+# /etc/init.d/craneagent
+
+#*********************************************************************************************************************
+# Program name  :  Data-seed-service
+# Created       :  01/11/2017
+# Purpose       :  Run craneagent as daemon
+# Discription   :  This script will run crane agent as daemon and gives option to start and stop crane service
+#*********************************************************************************************************************
+
+# set variables
+DIR=/usr/local/lib64/python2.6/site-packages/craneagent
+DAEMON=core/engine.py
+
+# start crane agent service
+case "$1" in
+  start)
+    echo "Starting craneagent"
+    # run application you want to start
+    cd $DIR && python $DAEMON &
+    ;;
+
+# stop crane agent service
+  stop)
+    echo "Stopping craneagent"
+    # kill application you want to stop
+    ps -ef | grep python | grep engine.py | awk '{print $2}' | xargs kill -9
+    ;;
+
+# Check crane agent service status
+  status)
+    crane_status=$(ps -ef | grep python | grep engine.py | awk '{print $2}')
+    if [ -z "$crane_status" ]; then
+      echo "Craneagent is in stopped state"
+    else
+      echo "Craneagent is in started state"
+    fi
+    ;;
+
+  *)
+    echo "Usage: /etc/init.d/crane{start|stop|status}"
+    exit 1
+    ;;
+esac
+
+exit 0

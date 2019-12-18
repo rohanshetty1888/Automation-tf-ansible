@@ -1,0 +1,7 @@
+---
+
+- name: Download pallets package
+  get_url: url={{ pallet_url }} dest={{ pallet_pkg_path }}/
+
+  when: ( pallet_url != "")
+

@@ -1,0 +1,85 @@
+---
+
+### Storage Unit test cases
+# Description: Following tasks will check for partition size, partition file system, partition name. It will also verify size of downloaded Qcow2 images.
+
+- parted: device={{ diskpartitionname }} unit=MiB
+  register: partition_info
+
+- name: Role=test_DiskPartion | Task=DiskPartion Test Case | Description=Verify partition name
+  fail:
+    msg: "Partition is not created or name is not assigned properly. Test case for checking partition name has been failed"
+  when: not '"{{ diskpartitionname }}" in partition_info.disk.dev'
+
+- name: Role=test_DiskPartion | Task=DiskPartion Test Case | Description=Verify partition File type
+  fail:
+    msg: "Partition is not formatted properly. Test case for checking partition file type has been failed"
+  when: not '"{{ diskpartitiontype }}" in partition_info.partitions.fstype'
+
+- name: check no. of partitions
+  shell: df -h | grep ^/dev | wc -l
+  register: no_partitions
+
+- name: Role=test_DiskPartion | Task=DiskPartion Test Case | Description=Verify no of paritions
+  fail:
+    msg: "Partitions are not created properly. Expected partitions are {{ total_partitions }} and Current Partitions are: {{ no_partitions.stdout }}"
+  when: no_partitions.stdout != "{{ total_partitions }}"
+
+- name: get the partition Path
+  shell: df -h | grep ^{{ diskpartitionname }} | awk '{ print $NF}'
+  register: partition_path
+
+- name: Role=test_DiskPartion | Task=DiskPartion Test Case | Description=Verify partition path
+  fail:
+    msg: "Partition path is not configured properly. Test case for checking partition path has been failed"
+  when: not '"{{ diskpartitionpath }}" in partition_path.stdout'
+
+- name: get size of db qcow2 file disk1
+  shell: du -sh {{ diskpartitionpath }}/{{ db_disk1_name }} | awk '{ print $1}'
+  register: db_disk1
+
+# Make sure db_disk1_size variable is defined in vars file. Then only uncomment following
+#- name: Role=test_DiskPartion | Task=Qcow2 File Test Case | Description=Verify size of DB Qcow2 disk1
+#  fail:
+#    msg: "DB qcow2 file is not downloaded properly. Test case for checking size of DB disk1 path has been failed"
+#  when: not '"{{ db_disk1_size }}" in db_disk1.stdout'
+
+- name: get size of db qcow2 file disk2
+  shell: du -sh {{ diskpartitionpath }}/{{ db_disk2_name }} | awk '{ print $1}'
+  register: db_disk2
+
+# Make sure db_disk2_size variable is defined in vars file. Then only uncomment following
+#- name: Role=test_DiskPartion | Task=Qcow2 File Test Case | Description=Verify size of DB Qcow2 disk2
+#  fail:
+#    msg: "DB qcow2 file is not downloaded properly. Test case for checking size of DB disk2 path has been failed"
+#  when: not '"{{ db_disk2_size }}" in db_disk2.stdout'
+
+- name: get size of db qcow2 file disk3
+  shell: du -sh {{ diskpartitionpath }}/{{ db_disk3_name }} | awk '{ print $1}'
+  register: db_disk3
+
+# Make sure db_disk3_size variable is defined in vars file. Then only uncomment following
+#- name: Role=test_DiskPartion | Task=Qcow2 File Test Case | Description=Verify size of DB Qcow2 disk3
+#  fail:
+#    msg: "DB qcow2 file is not downloaded properly. Test case for checking size of DB disk3 path has been failed"
+#  when: not '"{{ db_disk3_size }}" in db_disk3.stdout'
+
+- name: get size of vp qcow2 file disk1
+  shell: du -sh {{ diskpartitionpath }}/{{ vp_disk1_name }} | awk '{ print $1}'
+  register: vp_disk1
+
+# Make sure vp_disk2_size variable is defined in vars file. Then only uncomment following
+#- name: Role=test_DiskPartion | Task=Qcow2 File Test Case | Description=Verify size of VP Qcow2 disk1
+#  fail:
+#    msg: "VP qcow2 file is not downloaded properly. Test case for checking size of VP disk1 path has been failed"
+#  when: not '"{{ vp_disk1_size }}" in vp_disk1.stdout'
+
+- name: get size of vp qcow2 file disk2
+  shell: du -sh {{ diskpartitionpath }}/{{ vp_disk2_name }} | awk '{ print $1}'
+  register: vp_disk2
+
+# Make sure vp_disk2_size variable is defined in vars file. Then only uncomment following
+#- name: Role=test_DiskPartion | Task=Qcow2 File Test Case | Description=Verify size of VP Qcow2 disk2
+#  fail:
+#    msg: "VP qcow2 file is not downloaded properly. Test case for checking size of VP disk2 path has been failed"
+#  when: not '"{{ vp_disk2_size }}" in vp_disk2.stdout'

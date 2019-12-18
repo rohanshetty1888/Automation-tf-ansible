@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: True
+  become: yes
+  become_user: root
+  roles:
+    - ansible-dockerswarm
+    - config_vDBA

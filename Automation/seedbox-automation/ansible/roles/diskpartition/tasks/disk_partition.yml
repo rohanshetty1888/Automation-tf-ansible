@@ -1,0 +1,10 @@
+---
+- name: create new disk partaion
+  parted: device={{ disk_name }} unit=% number=1 state=present part_end=100%
+
+
+- name: format partation in ext3 format
+  shell: mkfs.{{ disk_fstype }} {{ disk_name }}1
+
+- name:  mount disk partion and  update fstab file
+  mount: path=/{{ kvm_path }}  src={{ disk_name }}1  fstype={{ disk_fstype }} state=mounted
